@@ -162,7 +162,7 @@ function App() {
 			</div>
 
 			<section className="relative">
-				<h2 className="text-lg font-semibold mb-2">
+				<h2 className="text-lg left-4 font-semibold mb-2">
 					Showing Skips
 					{filters.allowedOnRoad && " • Allowed on Road"}
 					{filters.allowsHeavyWaste && " • Allows Heavy Waste"}
@@ -178,15 +178,18 @@ function App() {
 					<>
 						<button
 							onClick={() => scroll("left")}
-							className="text-white hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue hover:bg-blue-100 shadow-md rounded-full w-10 h-10"
+							className="hidden md:flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm border border-gray-300 hover:bg-white shadow-lg rounded-full w-11 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+							aria-label="Scroll left"
 						>
-							<ChevronLeft className="w-5 h-5" />
+							<ChevronLeft className="w-6 h-6 text-gray-700" />
 						</button>
+
 						<button
 							onClick={() => scroll("right")}
-							className="text-white hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue hover:bg-blue-100 shadow-md rounded-full w-10 h-10"
+							className="hidden md:flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm border border-gray-300 hover:bg-white shadow-lg rounded-full w-11 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+							aria-label="Scroll right"
 						>
-							<ChevronRight className="w-5 h-5" />
+							<ChevronRight className="w-6 h-6 text-gray-700" />
 						</button>
 					</>
 				)}
