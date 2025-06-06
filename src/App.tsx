@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import SkipCard from "./components/SkipCard";
 import type { SkipOption } from "./types/SkipOption";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import FilterPanel from "./components/FilterPanel";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -10,8 +11,20 @@ function App() {
 	const [canScroll, setCanScroll] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const scrollRef = useRef<HTMLDivElement | null>(null);
+	const [filters, setFilters] = useState({
+		allowedOnRoad: false,
+		allowsHeavyWaste: false,
+	});
 
-	const visibleSkips = skips; //.filter((s) => s.allowedOnRoad);
+	const handleFilterChange = (key: keyof typeof filters) => {
+		setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+	};
+
+	const visibleSkips = skips.filter((s) => {
+		if (filters.allowedOnRoad && !s.allowedOnRoad) return false;
+		if (filters.allowsHeavyWaste && !s.allowsHeavyWaste) return false;
+		return true;
+	});
 
 	const handleScroll = () => {
 		if (!scrollRef.current) return;
@@ -94,8 +107,15 @@ function App() {
 		<main className="p-4 max-w-screen-xl mx-auto space-y-6">
 			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
+			<FilterPanel filters={filters} onChange={handleFilterChange} />
+
 			<section className="relative">
-				<h2 className="text-lg font-semibold mb-2">Allowed on Road</h2>
+				<h2 className="text-lg font-semibold mb-2">
+					Showing Skips
+					{filters.allowedOnRoad && " • Allowed on Road"}
+					{filters.allowsHeavyWaste && " • Allows Heavy Waste"}
+					{!filters.allowedOnRoad && !filters.allowsHeavyWaste && " • All"}
+				</h2>
 
 				{/* Edge fades */}
 				<div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-10 hidden md:block" />
