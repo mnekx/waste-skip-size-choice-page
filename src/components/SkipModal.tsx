@@ -21,7 +21,7 @@ export default function SkipModal({ skip, isOpen, onClose }: SkipModalProps) {
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z=50" onClose={onClose}>
+			<Dialog as="div" className="relative z-51" onClose={onClose}>
 				<TransitionChild
 					as={Fragment}
 					enter="ease-out duration-300"
