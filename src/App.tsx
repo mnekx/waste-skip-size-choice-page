@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import FilterPanel from "./components/FilterPanel";
 import type { FiltersType } from "./types/FiltersType";
 import SkipModal from "./components/SkipModal";
+import { Filter } from "lucide-react";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -27,6 +28,7 @@ function App() {
 		setSelectedSkip(skip);
 		setIsModalOpen(true);
 	};
+	const [showFilters, setShowFilters] = useState(false);
 
 	const handleFilterChange = (key: keyof FiltersType) => {
 		setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -126,14 +128,24 @@ function App() {
 	if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
 
 	return (
-		<main className="p-4 max-w-screen-xl mx-auto space-y-6">
+		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
 			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
-			<FilterPanel
-				filters={filters}
-				onChange={handleFilterChange}
-				onClear={handleClearFilters}
-			/>
+			<button
+				onClick={() => setShowFilters((prev) => !prev)}
+				className="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
+				aria-label="Toggle filters"
+			>
+				<Filter className="w-5 h-5" />
+			</button>
+
+			{showFilters && (
+				<FilterPanel
+					filters={filters}
+					onChange={handleFilterChange}
+					onClear={handleClearFilters}
+				/>
+			)}
 
 			<section className="relative">
 				<h2 className="text-lg font-semibold mb-2">

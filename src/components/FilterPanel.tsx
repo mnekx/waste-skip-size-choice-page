@@ -16,7 +16,7 @@ export default function FilterPanel({
 	const [isOpen, setIsOpen] = useState(true);
 
 	return (
-		<section className="bg-white border p-4 rounded shadow-sm mb-6 max-w-md">
+		<section className="fixed left-4 top-4 left-4 z-50 bg-white shadow-lg rounded-lg p-4 border w-72 space-y-2">
 			<h2 className="text-lg font-semibold mb-3">Filter Skips</h2>
 			<button
 				className="font-semibold text-blue-600 mb-2"
