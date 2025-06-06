@@ -1,64 +1,98 @@
 import { useEffect, useState } from "react";
 import SkipCard from "./components/SkipCard";
+import { useRef } from "react";
 import type { SkipOption } from "./types/SkipOption";
 
 function App() {
-  const [skips, setSkips] = useState<SkipOption[]>([]);
+	const [skips, setSkips] = useState<SkipOption[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const mock: SkipOption[] = [
-      {
-        size: 6,
-        hirePeriod: 14,
-        priceB4VAT: 305,
-        vat: 20,
-        postCode: "NR32",
-        allowedOnRoad: true,
-        allowsHeavyWaste: true,
-        transportCost: null,
-        perTonneCost: null,
-        area: "",
-        forbidden: false,
-        createdAt: "",
-        updatedAt: "",
-        imageUrl: "https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/4-yarder-skip.jpg"
-      },
-      {
-        size: 4,
-        hirePeriod: 7,
-        priceB4VAT: 200,
-        vat: 20,
-        postCode: "NR31",
-        allowedOnRoad: false,
-        allowsHeavyWaste: false,
-        transportCost: null,
-        perTonneCost: null,
-        area: "",
-        forbidden: false,
-        createdAt: "",
-        updatedAt: "",
-        imageUrl: "	https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg"
-      },
-    ];
-    setSkips(mock);
-  }, []);
+	const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  return (
-    <main className="p-4 max-w-screen-xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
+	const scroll = (direction: "left" | "right") => {
+		if (!scrollRef.current) return;
+		const scrollAmount = 260; // width of one card
+		scrollRef.current.scrollBy({
+			left: direction === "left" ? -scrollAmount : scrollAmount,
+			behavior: "smooth",
+		});
+	};
 
-      <section>
-        <h2 className="text-lg font-semibold mb-2">Allowed on Road</h2>
-        <div className="flex overflow-x-auto scrollbar-hide scroll-smooth space-x-4 pb-2">
-          {skips
-            .filter((s) => s.allowedOnRoad)
-            .map((skip, i) => (
-              <SkipCard key={i} skip={skip} />
-            ))}
-        </div>
-      </section>
-    </main>
-  );
+	useEffect(() => {
+		const fetchSkips = async () => {
+			try {
+				const res = await fetch(
+					"https://app.wewantwaste.co.uk/api/skips/by-location?postcode=NR32&area=Lowestoft"
+				);
+				if (!res.ok) throw new Error("Failed to fetch skip data");
+				const rawData: [] = await res.json();
+
+				const mappedData: SkipOption[] = rawData.map((item: any) => ({
+					size: item.size,
+					hirePeriod: item.hire_period_days,
+					transportCost: item.transport_cost,
+					perTonneCost: item.per_tonne_cost,
+					priceB4VAT: item.price_before_vat,
+					vat: item.vat,
+					postCode: item.postcode,
+					area: item.area,
+					forbidden: item.forbidden,
+					createdAt: item.created_at,
+					updatedAt: item.updated_at,
+					allowedOnRoad: item.allowed_on_road,
+					allowsHeavyWaste: item.allows_heavy_waste,
+					imageUrl:
+						"https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
+				}));
+
+				setSkips(mappedData);
+			} catch (err: any) {
+				setError(err.message || "Unexpected error");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchSkips();
+	}, []);
+
+	if (loading) return <p className="p-4">Loading skip data...</p>;
+	if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
+
+	return (
+		<main className="p-4 max-w-screen-xl mx-auto space-y-6">
+			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
+
+			<section>
+				<h2 className="text-lg font-semibold mb-2">Allowed on Road</h2>
+				{/* Arrows */}
+				<button
+					onClick={() => scroll("left")}
+					className="absolute left-0 top-[50%] -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full"
+				>
+					◀
+				</button>
+
+				<button
+					onClick={() => scroll("right")}
+					className="absolute right-0 top-[50%] -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full"
+				>
+					▶
+				</button>
+				<div
+					ref={scrollRef}
+					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2"
+				>
+					{skips
+						// .filter((s) => s.allowedOnRoad)
+						.map((skip, i) => (
+							<SkipCard key={i} skip={skip} />
+						))}
+				</div>
+			</section>
+		</main>
+	);
 }
 
 export default App;

@@ -1,10 +1,11 @@
 import type { SkipOption } from "../types/SkipOption";
 
+
 export default function SkipCard({ skip }: { skip: SkipOption }) {
   const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 
   return (
-    <div className="min-w-[240px] sm:min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border border-gray-200">
+    <div className="snap-start min-w-[240px] sm:min-w-[260px] min-w-[240px] sm:min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border border-gray-200">
       {/* 🖼️ Image Section */}
       {skip.imageUrl && (
         <img
