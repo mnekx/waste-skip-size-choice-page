@@ -1,19 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SkipCard from "./components/SkipCard";
-import { useRef } from "react";
 import type { SkipOption } from "./types/SkipOption";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [canScroll, setCanScroll] = useState(false);
-
+	const [activeIndex, setActiveIndex] = useState(0);
 	const scrollRef = useRef<HTMLDivElement | null>(null);
+
+	const visibleSkips = skips; //.filter((s) => s.allowedOnRoad);
+
+	const handleScroll = () => {
+		if (!scrollRef.current) return;
+		const scrollLeft = scrollRef.current.scrollLeft;
+		const cardWidth = 260;
+		const index = Math.round(scrollLeft / cardWidth);
+		setActiveIndex(Math.min(index, visibleSkips.length - 1));
+	};
 
 	const scroll = (direction: "left" | "right") => {
 		if (!scrollRef.current) return;
-		const scrollAmount = 260; // width of one card
+		const scrollAmount = 260;
 		scrollRef.current.scrollBy({
 			left: direction === "left" ? -scrollAmount : scrollAmount,
 			behavior: "smooth",
@@ -30,7 +40,14 @@ function App() {
 		checkScroll();
 		window.addEventListener("resize", checkScroll);
 		return () => window.removeEventListener("resize", checkScroll);
-	}, [skips]);
+	}, [visibleSkips]);
+
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (!el) return;
+		el.addEventListener("scroll", handleScroll);
+		return () => el.removeEventListener("scroll", handleScroll);
+	}, [visibleSkips.length]);
 
 	useEffect(() => {
 		const fetchSkips = async () => {
@@ -77,33 +94,51 @@ function App() {
 		<main className="p-4 max-w-screen-xl mx-auto space-y-6">
 			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
-			<section>
+			<section className="relative">
 				<h2 className="text-lg font-semibold mb-2">Allowed on Road</h2>
+
+				{/* Edge fades */}
+				<div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-10 hidden md:block" />
+				<div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-10 hidden md:block" />
+
+				{/* Arrows */}
 				{canScroll && (
 					<>
 						<button
 							onClick={() => scroll("left")}
 							className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
 						>
-							<span className="text-xl font-bold">◀</span>
+							<ChevronLeft className="w-5 h-5" />
 						</button>
 						<button
 							onClick={() => scroll("right")}
 							className="hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
 						>
-							<span className="text-xl font-bold">▶</span>
+							<ChevronRight className="w-5 h-5" />
 						</button>
 					</>
 				)}
+
+				{/* Skip cards carousel */}
 				<div
 					ref={scrollRef}
 					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10"
 				>
-					{skips
-						// .filter((s) => s.allowedOnRoad)
-						.map((skip, i) => (
-							<SkipCard key={i} skip={skip} />
-						))}
+					{visibleSkips.map((skip, i) => (
+						<SkipCard key={i} skip={skip} />
+					))}
+				</div>
+
+				{/* Mobile indicator dots */}
+				<div className="flex justify-center mt-2 md:hidden">
+					{visibleSkips.map((_, i) => (
+						<div
+							key={i}
+							className={`w-2 h-2 mx-1 rounded-full transition-all duration-300 ${
+								i === activeIndex ? "bg-blue-600 scale-125" : "bg-gray-300"
+							}`}
+						/>
+					))}
 				</div>
 			</section>
 		</main>
