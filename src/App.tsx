@@ -7,6 +7,7 @@ function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [canScroll, setCanScroll] = useState(false);
 
 	const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -18,6 +19,18 @@ function App() {
 			behavior: "smooth",
 		});
 	};
+
+	useEffect(() => {
+		const checkScroll = () => {
+			if (!scrollRef.current) return;
+			const el = scrollRef.current;
+			setCanScroll(el.scrollWidth > el.clientWidth);
+		};
+
+		checkScroll();
+		window.addEventListener("resize", checkScroll);
+		return () => window.removeEventListener("resize", checkScroll);
+	}, [skips]);
 
 	useEffect(() => {
 		const fetchSkips = async () => {
@@ -66,23 +79,25 @@ function App() {
 
 			<section>
 				<h2 className="text-lg font-semibold mb-2">Allowed on Road</h2>
-				{/* Arrows */}
-				<button
-					onClick={() => scroll("left")}
-					className="absolute left-0 top-[50%] -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full"
-				>
-					◀
-				</button>
-
-				<button
-					onClick={() => scroll("right")}
-					className="absolute right-0 top-[50%] -translate-y-1/2 z-10 bg-white shadow p-2 rounded-full"
-				>
-					▶
-				</button>
+				{canScroll && (
+					<>
+						<button
+							onClick={() => scroll("left")}
+							className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
+						>
+							<span className="text-xl font-bold">◀</span>
+						</button>
+						<button
+							onClick={() => scroll("right")}
+							className="hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
+						>
+							<span className="text-xl font-bold">▶</span>
+						</button>
+					</>
+				)}
 				<div
 					ref={scrollRef}
-					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2"
+					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10"
 				>
 					{skips
 						// .filter((s) => s.allowedOnRoad)
