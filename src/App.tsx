@@ -89,7 +89,7 @@ function App() {
 		if (!el) return;
 		el.addEventListener("scroll", handleScroll);
 		return () => el.removeEventListener("scroll", handleScroll);
-	}, [visibleSkips.length]);
+	}, [visibleSkips.length, handleScroll]);
 
 	useEffect(() => {
 		const fetchSkips = async () => {
