@@ -27,7 +27,7 @@ vi.stubGlobal(
 			ok: true,
 			json: () => Promise.resolve(mockFetchResponse),
 		})
-	) as any
+	) as unknown as typeof fetch
 );
 
 describe("App", () => {
