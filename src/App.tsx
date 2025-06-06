@@ -134,28 +134,31 @@ function App() {
 
 	return (
 		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
-			<div className="relative z-20 inline-block flex">
+			<div className="flex items-center">
 				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
-				<button
-					onClick={() => setShowFilters((prev) => !prev)}
-					className="bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
-					aria-label="Toggle filters"
-				>
-					<Filter className="w-5 h-5" />
-				</button>
 
-				{showFilters && (
-					<div
-						ref={filterRef}
-						className="absolute left-0 mt-2 w-72 bg-white border border-gray-300 rounded-lg shadow-lg"
+				<div className="relative z-20 inline-block left-4">
+					<button
+						onClick={() => setShowFilters((prev) => !prev)}
+						className="bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
+						aria-label="Toggle filters"
 					>
-						<FilterPanel
-							filters={filters}
-							onChange={handleFilterChange}
-							onClear={handleClearFilters}
-						/>
-					</div>
-				)}
+						<Filter className="w-5 h-5" />
+					</button>
+
+					{showFilters && (
+						<div
+							ref={filterRef}
+							className="absolute left-0 mt-2 w-72 bg-white border border-gray-300 rounded-lg shadow-lg"
+						>
+							<FilterPanel
+								filters={filters}
+								onChange={handleFilterChange}
+								onClear={handleClearFilters}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 
 			<section className="relative">
@@ -175,13 +178,13 @@ function App() {
 					<>
 						<button
 							onClick={() => scroll("left")}
-							className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
+							className="text-white hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue hover:bg-blue-100 shadow-md rounded-full w-10 h-10"
 						>
 							<ChevronLeft className="w-5 h-5" />
 						</button>
 						<button
 							onClick={() => scroll("right")}
-							className="hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 shadow-md rounded-full w-10 h-10"
+							className="text-white hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue hover:bg-blue-100 shadow-md rounded-full w-10 h-10"
 						>
 							<ChevronRight className="w-5 h-5" />
 						</button>
