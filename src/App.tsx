@@ -7,6 +7,7 @@ import type { FiltersType } from "./types/FiltersType";
 import SkipModal from "./components/SkipModal";
 import { Filter } from "lucide-react";
 import { useClickOutside } from "./hooks/useClickOutside";
+import { handleError } from "./utils/handleError";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -89,7 +90,7 @@ function App() {
 		if (!el) return;
 		el.addEventListener("scroll", handleScroll);
 		return () => el.removeEventListener("scroll", handleScroll);
-	}, [visibleSkips.length]);
+	}, [visibleSkips.length, handleScroll]);
 
 	useEffect(() => {
 		const fetchSkips = async () => {
@@ -100,27 +101,43 @@ function App() {
 				if (!res.ok) throw new Error("Failed to fetch skip data");
 				const rawData: [] = await res.json();
 
-				const mappedData: SkipOption[] = rawData.map((item: any) => ({
-					size: item.size,
-					hirePeriod: item.hire_period_days,
-					transportCost: item.transport_cost,
-					perTonneCost: item.per_tonne_cost,
-					priceB4VAT: item.price_before_vat,
-					vat: item.vat,
-					postCode: item.postcode,
-					area: item.area,
-					forbidden: item.forbidden,
-					createdAt: item.created_at,
-					updatedAt: item.updated_at,
-					allowedOnRoad: item.allowed_on_road,
-					allowsHeavyWaste: item.allows_heavy_waste,
-					imageUrl:
-						"https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
-				}));
+				const mappedData: SkipOption[] = rawData.map(
+					(item: {
+						size: number;
+						hire_period_days: number;
+						transport_cost: number;
+						per_tonne_cost: number;
+						price_before_vat: number;
+						vat: number;
+						postcode: string;
+						area: string;
+						forbidden: boolean;
+						created_at: string;
+						updated_at: string;
+						allowed_on_road: boolean;
+						allows_heavy_waste: boolean;
+					}) => ({
+						size: item.size,
+						hirePeriod: item.hire_period_days,
+						transportCost: item.transport_cost,
+						perTonneCost: item.per_tonne_cost,
+						priceB4VAT: item.price_before_vat,
+						vat: item.vat,
+						postCode: item.postcode,
+						area: item.area,
+						forbidden: item.forbidden,
+						createdAt: item.created_at,
+						updatedAt: item.updated_at,
+						allowedOnRoad: item.allowed_on_road,
+						allowsHeavyWaste: item.allows_heavy_waste,
+						imageUrl:
+							"https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
+					})
+				);
 
 				setSkips(mappedData);
-			} catch (err: any) {
-				setError(err.message || "Unexpected error");
+			} catch (err: unknown) {
+				handleError(err, setError, "Fetching Data");
 			} finally {
 				setLoading(false);
 			}
@@ -203,7 +220,10 @@ function App() {
 						<SkipCard
 							key={i}
 							skip={skip}
-               isSelected={selectedSkip?.postCode === skip.postCode && selectedSkip?.size === skip.size}
+							isSelected={
+								selectedSkip?.postCode === skip.postCode &&
+								selectedSkip?.size === skip.size
+							}
 							onSelect={() => handleSelectSkip(skip)}
 						/>
 					))}
