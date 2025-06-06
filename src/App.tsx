@@ -162,7 +162,7 @@ function App() {
 			</div>
 
 			<section className="relative">
-				<h2 className="text-lg left-4 font-semibold mb-2">
+				<h2 className="text-lg left-4 font-semibold mb-2 ml-3">
 					Showing Skips
 					{filters.allowedOnRoad && " • Allowed on Road"}
 					{filters.allowsHeavyWaste && " • Allows Heavy Waste"}
