@@ -4,6 +4,7 @@ import type { SkipOption } from "./types/SkipOption";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import FilterPanel from "./components/FilterPanel";
 import type { FiltersType } from "./types/FiltersType";
+import SkipModal from "./components/SkipModal";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -19,6 +20,13 @@ function App() {
 		size12: false,
 		hirePeriod14: false,
 	});
+	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleSelectSkip = (skip: SkipOption) => {
+		setSelectedSkip(skip);
+		setIsModalOpen(true);
+	};
 
 	const handleFilterChange = (key: keyof FiltersType) => {
 		setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -136,8 +144,8 @@ function App() {
 				</h2>
 
 				{/* Edge fades */}
-				<div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-10 hidden md:block" />
-				<div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-10 hidden md:block" />
+				<div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-white via-white/60 to-transparent pointer-events-none z-10 hidden md:block" />
+				<div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-white via-white/60 to-transparent pointer-events-none z-10 hidden md:block" />
 
 				{/* Arrows */}
 				{canScroll && (
@@ -163,8 +171,17 @@ function App() {
 					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10"
 				>
 					{visibleSkips.map((skip, i) => (
-						<SkipCard key={i} skip={skip} />
+						<SkipCard
+							key={i}
+							skip={skip}
+							onSelect={() => handleSelectSkip(skip)}
+						/>
 					))}
+					<SkipModal
+						skip={selectedSkip}
+						isOpen={isModalOpen}
+						onClose={() => setIsModalOpen(false)}
+					/>
 				</div>
 
 				{/* Mobile indicator dots */}
