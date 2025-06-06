@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 
 import type { FiltersType } from "../types/FiltersType";
 
@@ -13,18 +13,12 @@ export default function FilterPanel({
 	onChange,
 	onClear,
 }: FilterPanelProps) {
-	const [isOpen, setIsOpen] = useState(true);
 
 	return (
-		<section className="fixed left-4 top-4 left-4 z-50 bg-white shadow-lg rounded-lg p-4 border w-72 space-y-2">
+		<section className="z-50 bg-white shadow-lg rounded-lg p-4 border w-72 space-y-2">
 			<h2 className="text-lg font-semibold mb-3">Filter Skips</h2>
-			<button
-				className="font-semibold text-blue-600 mb-2"
-				onClick={() => setIsOpen((prev) => !prev)}
-			>
-				{isOpen ? "Hide Filters" : "Show Filters"}
-			</button>
-			{isOpen && (
+			
+			
 				<form className="space-y-2">
 					<label
 						htmlFor="allowed-on-road"
@@ -86,7 +80,7 @@ export default function FilterPanel({
 						Clear All
 					</button>
 				</form>
-			)}
+			
 		</section>
 	);
 }

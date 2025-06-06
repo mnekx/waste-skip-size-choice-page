@@ -6,6 +6,7 @@ import FilterPanel from "./components/FilterPanel";
 import type { FiltersType } from "./types/FiltersType";
 import SkipModal from "./components/SkipModal";
 import { Filter } from "lucide-react";
+import { useClickOutside } from "./hooks/useClickOutside";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -66,6 +67,10 @@ function App() {
 			behavior: "smooth",
 		});
 	};
+
+	const filterRef = useRef<HTMLDivElement>(null);
+
+	useClickOutside(filterRef, () => setShowFilters(false));
 
 	useEffect(() => {
 		const checkScroll = () => {
@@ -129,23 +134,29 @@ function App() {
 
 	return (
 		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
-			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
+			<div className="relative z-20 inline-block flex">
+				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
+				<button
+					onClick={() => setShowFilters((prev) => !prev)}
+					className="bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
+					aria-label="Toggle filters"
+				>
+					<Filter className="w-5 h-5" />
+				</button>
 
-			<button
-				onClick={() => setShowFilters((prev) => !prev)}
-				className="fixed top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
-				aria-label="Toggle filters"
-			>
-				<Filter className="w-5 h-5" />
-			</button>
-
-			{showFilters && (
-				<FilterPanel
-					filters={filters}
-					onChange={handleFilterChange}
-					onClear={handleClearFilters}
-				/>
-			)}
+				{showFilters && (
+					<div
+						ref={filterRef}
+						className="absolute left-0 mt-2 w-72 bg-white border border-gray-300 rounded-lg shadow-lg"
+					>
+						<FilterPanel
+							filters={filters}
+							onChange={handleFilterChange}
+							onClear={handleClearFilters}
+						/>
+					</div>
+				)}
+			</div>
 
 			<section className="relative">
 				<h2 className="text-lg font-semibold mb-2">
