@@ -2,16 +2,22 @@ import type { SkipOption } from "../types/SkipOption";
 
 export default function SkipCard({
 	skip,
+	isSelected,
 	onSelect,
 }: {
 	skip: SkipOption;
+	isSelected?: boolean;
 	onSelect: () => void;
 }) {
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 
 	return (
-		<div className="snap-start min-w-[240px] sm:min-w-[260px] min-w-[240px] sm:min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border border-gray-200">
-			{/* 🖼️ Image Section */}
+		<div
+			onClick={onSelect}
+			className={`cursor-pointer snap-start min-w-[240px] sm:min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 ${
+				isSelected ? "border-blue-600 ring-2 ring-blue-400" : "border-gray-200"
+			}`}
+		>
 			{skip.imageUrl && (
 				<img
 					src={skip.imageUrl}
@@ -20,7 +26,6 @@ export default function SkipCard({
 				/>
 			)}
 
-			{/* 🧾 Info */}
 			<h3 className="text-lg font-semibold mb-1">{skip.size}-Yard Skip</h3>
 			<p className="text-sm">📍 Postcode: {skip.postCode}</p>
 			<p className="text-sm">📆 Hire: {skip.hirePeriod} days</p>
@@ -33,12 +38,6 @@ export default function SkipCard({
 			<p className="text-sm font-medium mt-2">
 				💰 TZS {total.toLocaleString()} incl. VAT
 			</p>
-			<button
-				onClick={onSelect}
-				className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
-			>
-				Select Skip
-			</button>
 		</div>
 	);
 }

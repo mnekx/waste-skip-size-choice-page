@@ -203,6 +203,7 @@ function App() {
 						<SkipCard
 							key={i}
 							skip={skip}
+               isSelected={selectedSkip?.postCode === skip.postCode && selectedSkip?.size === skip.size}
 							onSelect={() => handleSelectSkip(skip)}
 						/>
 					))}
