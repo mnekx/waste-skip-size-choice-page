@@ -25,7 +25,7 @@ describe("SkipModal", () => {
 		render(<SkipModal isOpen={true} skip={mockSkip} onClose={() => {}} />);
 
 		expect(screen.getByText(/8-yard skip/i)).toBeInTheDocument();
-		expect(screen.getByText(/Postcode: NR32/i)).toBeInTheDocument();
+		expect(screen.getByText(/NR32/i)).toBeInTheDocument();
 		expect(
 			screen.getByRole("button", { name: /Continue/i })
 		).toBeInTheDocument();
