@@ -3,6 +3,7 @@ import SkipCard from "./components/SkipCard";
 import type { SkipOption } from "./types/SkipOption";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import FilterPanel from "./components/FilterPanel";
+import type { FiltersType } from "./types/FiltersType";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -14,9 +15,12 @@ function App() {
 	const [filters, setFilters] = useState({
 		allowedOnRoad: false,
 		allowsHeavyWaste: false,
+		size8: false,
+		size12: false,
+		hirePeriod14: false,
 	});
 
-	const handleFilterChange = (key: keyof typeof filters) => {
+	const handleFilterChange = (key: keyof FiltersType) => {
 		setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
 	};
 
@@ -32,6 +36,16 @@ function App() {
 		const cardWidth = 260;
 		const index = Math.round(scrollLeft / cardWidth);
 		setActiveIndex(Math.min(index, visibleSkips.length - 1));
+	};
+
+	const handleClearFilters = () => {
+		setFilters({
+			allowedOnRoad: false,
+			allowsHeavyWaste: false,
+			size8: false,
+			size12: false,
+			hirePeriod14: false,
+		});
 	};
 
 	const scroll = (direction: "left" | "right") => {
@@ -107,7 +121,11 @@ function App() {
 		<main className="p-4 max-w-screen-xl mx-auto space-y-6">
 			<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
-			<FilterPanel filters={filters} onChange={handleFilterChange} />
+			<FilterPanel
+				filters={filters}
+				onChange={handleFilterChange}
+				onClear={handleClearFilters}
+			/>
 
 			<section className="relative">
 				<h2 className="text-lg font-semibold mb-2">
