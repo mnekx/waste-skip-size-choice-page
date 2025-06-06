@@ -7,6 +7,7 @@ import type { FiltersType } from "./types/FiltersType";
 import SkipModal from "./components/SkipModal";
 import { Filter } from "lucide-react";
 import { useClickOutside } from "./hooks/useClickOutside";
+import { handleError } from "./utils/handleError";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -135,8 +136,8 @@ function App() {
 				);
 
 				setSkips(mappedData);
-			} catch (err: any) {
-				setError(err.message || "Unexpected error");
+			} catch (err: unknown) {
+				handleError(err, setError, "Fetching Data");
 			} finally {
 				setLoading(false);
 			}
