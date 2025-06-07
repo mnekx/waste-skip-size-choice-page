@@ -82,7 +82,7 @@ export default function FilterPanel({
 			<div className="flex justify-between pt-2 border-t mt-2">
 				<button
 					onClick={onClear}
-					className="flex items-center gap-1 text-gray-500 hover:text-red-600 hover:underline text-sm"
+					className="flex items-center gap-1 cursor-pointer text-gray-500 hover:text-red-600 hover:underline text-sm"
 				>
 					<Trash2 className="w-4 h-4" /> Clear All
 				</button>
