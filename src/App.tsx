@@ -29,12 +29,17 @@ function App() {
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
 	const handleModalNavigate = (newIndex: number) => {
-		setSelectedIndex(newIndex);
+		const skip = skips[newIndex];
+		if (!skip) return;
+		handleSelectSkip(skip);
 		scrollToCard(newIndex);
 	};
 
 	const handleSelectSkip = (skip: SkipOption) => {
 		const index = visibleSkips.findIndex((s) => s === skip);
+		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
+		if (!cards || cards.length === 0) return;
+		(cards[index] as HTMLElement).focus(); // Focus the selected card
 		setSelectedIndex(index);
 		setSelectedSkip(skip);
 		setIsModalOpen(true);
