@@ -26,18 +26,17 @@ export default function SkipModal({
 }: SkipModalProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const skip = skipList[selectedIndex];
-	if (!skip) return null;
 
-	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
+	const total = skip?.priceB4VAT + (skip?.priceB4VAT * skip?.vat) / 100;
 	const goPrev = useCallback(() => {
 		const newIndex = (selectedIndex - 1 + skipList.length) % skipList.length;
 		onNav(newIndex);
-	}, [selectedIndex, skipList.length]);
+	}, [selectedIndex, skipList.length, onNav]);
 
 	const goNext = useCallback(() => {
 		const newIndex = (selectedIndex + 1) % skipList.length;
 		onNav(newIndex);
-	}, [selectedIndex, skipList.length]);
+	}, [selectedIndex, skipList.length, onNav]);
 
 	const handleContinue = () => {
 		setIsSubmitting(true);
@@ -95,13 +94,13 @@ export default function SkipModal({
 								{/* Image */}
 								<div className="relative h-48 sm:h-64">
 									<img
-										src={skip.imageUrl}
-										alt={`${skip.size}-yard skip`}
+										src={skip?.imageUrl}
+										alt={`${skip?.size}-yard skip`}
 										className="absolute inset-0 w-full h-full object-cover"
 									/>
 									<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
 									<div className="absolute bottom-3 left-4 text-white text-xl font-bold">
-										{skip.size}-Yard Skip
+										{skip?.size}-Yard Skip
 									</div>
 								</div>
 
@@ -123,24 +122,24 @@ export default function SkipModal({
 								<div className="p-5 space-y-3">
 									<div className="flex items-center gap-2 text-sm text-gray-700">
 										<CalendarDays className="w-4 h-4 text-blue-500" />
-										Hire Period: {skip.hirePeriod} days
+										Hire Period: {skip?.hirePeriod} days
 									</div>
 									<div className="flex items-center gap-2 text-sm text-gray-700">
 										<MapPin className="w-4 h-4 text-green-500" />
-										Postcode: {skip.postCode}
+										Postcode: {skip?.postCode}
 									</div>
 									<div className="flex items-center gap-2 text-sm text-gray-700">
 										<Truck className="w-4 h-4 text-orange-500" />
 										Road Use:{" "}
 										<span className="font-medium">
-											{skip.allowedOnRoad ? "Allowed" : "Not allowed"}
+											{skip?.allowedOnRoad ? "Allowed" : "Not allowed"}
 										</span>
 									</div>
 									<div className="flex items-center gap-2 text-sm text-gray-700">
 										<Weight className="w-4 h-4 text-purple-500" />
 										Heavy Waste:{" "}
 										<span className="font-medium">
-											{skip.allowsHeavyWaste ? "Yes" : "No"}
+											{skip?.allowsHeavyWaste ? "Yes" : "No"}
 										</span>
 									</div>
 									<div className="flex items-center gap-2 text-base font-semibold text-gray-800 mt-3">
