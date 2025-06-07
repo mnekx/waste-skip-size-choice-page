@@ -1,86 +1,88 @@
-
-
 import type { FiltersType } from "../types/FiltersType";
+import { CheckCircle, Trash2, Weight } from "lucide-react";
 
-type FilterPanelProps = {
-	filters: FiltersType;
-	onChange: (key: keyof FiltersType) => void;
-	onClear: () => void;
-};
+interface FilterPanelProps {
+  filters: FiltersType;
+  onChange: (key: keyof FiltersType) => void;
+  onClear: () => void;
+}
 
-export default function FilterPanel({
-	filters,
-	onChange,
-	onClear,
-}: FilterPanelProps) {
+export default function FilterPanel({ filters, onChange, onClear }: FilterPanelProps) {
+  return (
+    <div className="p-4 space-y-4 text-sm text-gray-700">
+      {/* Road & Waste */}
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Road & Waste Options</h3>
+        <div className="grid grid-cols-2 gap-2">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={filters.allowedOnRoad}
+              onChange={() => onChange("allowedOnRoad")}
+              className="accent-blue-600"
+            />
+            <CheckCircle className="w-4 h-4 text-blue-500" /> Allowed on Road
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={filters.allowsHeavyWaste}
+              onChange={() => onChange("allowsHeavyWaste")}
+              className="accent-blue-600"
+            />
+            <Weight className="w-4 h-4 text-purple-500" /> Heavy Waste
+          </label>
+        </div>
+      </div>
 
-	return (
-		<section className="z-50 bg-white shadow-lg rounded-lg p-4 border w-72 space-y-2">
-			<h2 className="text-lg font-semibold mb-3">Filter Skips</h2>
-			
-			
-				<form className="space-y-2">
-					<label
-						htmlFor="allowed-on-road"
-						className="flex items-center space-x-2"
-					>
-						<input
-							id="allowed-on-road"
-							type="checkbox"
-							checked={filters.allowedOnRoad}
-							onChange={() => onChange("allowedOnRoad")}
-							className="form-checkbox"
-						/>
-						<span>Allowed on Road</span>
-					</label>
-					<label
-						htmlFor="allowed-heavy-waste"
-						className="flex items-center space-x-2"
-					>
-						<input
-							id="allowed-heavy-waste"
-							type="checkbox"
-							checked={filters.allowsHeavyWaste}
-							onChange={() => onChange("allowsHeavyWaste")}
-							className="form-checkbox"
-						/>
-						<span>Allows Heavy Waste</span>
-					</label>
-					<label className="flex items-center space-x-2">
-						<input
-							id="size-8"
-							type="checkbox"
-							checked={filters.size8}
-							onChange={() => onChange("size8")}
-						/>
-						<span>8 Yard</span>
-					</label>
-					<label className="flex items-center space-x-2">
-						<input
-							id="size-12"
-							type="checkbox"
-							checked={filters.size12}
-							onChange={() => onChange("size12")}
-						/>
-						<span>12 Yard</span>
-					</label>
-					<label className="flex items-center space-x-2">
-						<input
-							id="hire-period-14"
-							type="checkbox"
-							checked={filters.hirePeriod14}
-							onChange={() => onChange("hirePeriod14")}
-						/>
-						<span>14 Days Hire</span>
-					</label>
-					<button
-						className="text-sm text-blue-600 underline mt-2"
-						onClick={() => onClear()}
-					>
-						Clear All
-					</button>
-				</form>
-			
-		</section>
-	);
+      {/* Size Filters */}
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Size</h3>
+        <div className="grid grid-cols-2 gap-2">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={filters.size8}
+              onChange={() => onChange("size8")}
+              className="accent-blue-600"
+            />
+            8 Yard
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={filters.size12}
+              onChange={() => onChange("size12")}
+              className="accent-blue-600"
+            />
+            12 Yard
+          </label>
+        </div>
+      </div>
+
+      {/* Hire Period */}
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Hire Period</h3>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={filters.hirePeriod14}
+            onChange={() => onChange("hirePeriod14")}
+            className="accent-blue-600"
+          />
+          14 Days
+        </label>
+      </div>
+
+      {/* Clear Button */}
+      <div className="flex justify-between pt-2 border-t mt-2">
+        <button
+          onClick={onClear}
+          className="flex items-center gap-1 text-gray-500 hover:text-red-600 hover:underline text-sm"
+        >
+          <Trash2 className="w-4 h-4" /> Clear All
+        </button>
+      </div>
+    </div>
+  );
 }
