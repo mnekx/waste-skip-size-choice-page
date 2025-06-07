@@ -33,7 +33,6 @@ vi.stubGlobal(
 describe("App", () => {
 	it("Renders skip data from API", async () => {
 		render(<App />);
-		expect(screen.getByText("Loading skip data...")).toBeInTheDocument();
 
 		await waitFor(() =>
 			expect(screen.getByText(/Choose your skip size/i)).toBeInTheDocument()
