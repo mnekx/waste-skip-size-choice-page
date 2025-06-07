@@ -170,6 +170,10 @@ function App() {
 
 	return (
 		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
+			{/* Accessibility live region */}
+			<div aria-live="polite" className="sr-only">
+				{selectedSkip ? `${selectedSkip.size}-yard skip selected` : ""}
+			</div>
 			<div className="flex items-center">
 				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
