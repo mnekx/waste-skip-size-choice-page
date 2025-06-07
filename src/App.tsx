@@ -26,8 +26,12 @@ function App() {
 	});
 	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+
 
 	const handleSelectSkip = (skip: SkipOption) => {
+		const index = visibleSkips.findIndex((s) => s === skip);
+		setSelectedIndex(index);
 		setSelectedSkip(skip);
 		setIsModalOpen(true);
 	};
@@ -264,7 +268,9 @@ function App() {
 						/>
 					))}
 					<SkipModal
-						skip={selectedSkip}
+						selectedIndex={selectedIndex}
+						setSelectedIndex={setSelectedIndex}
+						skipList={visibleSkips}
 						isOpen={isModalOpen}
 						onClose={() => setIsModalOpen(false)}
 					/>

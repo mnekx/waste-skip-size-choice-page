@@ -1,26 +1,41 @@
-import { Dialog, Transition, TransitionChild } from "@headlessui/react";
+import {
+	Dialog,
+	DialogPanel,
+	Transition,
+	TransitionChild,
+} from "@headlessui/react";
 import { Fragment, useState } from "react";
-import type { SkipOption } from "../types/SkipOption";
 import {
 	CalendarDays,
 	MapPin,
 	Truck,
 	Weight,
 	PoundSterling,
+	ChevronRight,
+	ChevronLeft,
 } from "lucide-react";
+import type { SkipModalProps } from "../types/SkipModalProps";
 
 export default function SkipModal({
 	isOpen,
 	onClose,
-	skip,
-}: {
-	isOpen: boolean;
-	onClose: () => void;
-	skip: SkipOption | null;
-}) {
+	skipList,
+	selectedIndex,
+	setSelectedIndex,
+}: SkipModalProps) {
+	const skip = skipList[selectedIndex];
 	if (!skip) return null;
 
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
+	const goPrev = () => {
+		const newIndex = (selectedIndex - 1 + skipList.length) % skipList.length;
+		setSelectedIndex(newIndex);
+	};
+
+	const goNext = () => {
+		const newIndex = (selectedIndex + 1) % skipList.length;
+		setSelectedIndex(newIndex);
+	};
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -58,7 +73,7 @@ export default function SkipModal({
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-xl bg-white shadow-xl transition-all">
+							<DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-xl bg-white shadow-xl transition-all">
 								{/* Image */}
 								<div className="relative h-48 sm:h-64">
 									<img
@@ -71,6 +86,20 @@ export default function SkipModal({
 										{skip.size}-Yard Skip
 									</div>
 								</div>
+
+								{/* Carousel Arrows */}
+								<button
+									onClick={goPrev}
+									className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-1 hover:bg-gray-100"
+								>
+									<ChevronLeft className="w-5 h-5" />
+								</button>
+								<button
+									onClick={goNext}
+									className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-1 hover:bg-gray-100"
+								>
+									<ChevronRight className="w-5 h-5" />
+								</button>
 
 								{/* Content */}
 								<div className="p-5 space-y-3">
@@ -118,7 +147,7 @@ export default function SkipModal({
 										</button>
 									</div>
 								</div>
-							</Dialog.Panel>
+							</DialogPanel>
 						</TransitionChild>
 					</div>
 				</div>
