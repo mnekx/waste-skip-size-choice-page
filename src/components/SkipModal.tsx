@@ -75,12 +75,12 @@ export default function SkipModal({ skip, isOpen, onClose }: SkipModalProps) {
 								</ul>
 								<div className="mt-6 flex justify-between">
 									<button
-										className="text-sm text-gray-500 hover:underline"
+										className="cursor-pointer mt-4 text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors duration-150"
 										onClick={onClose}
 									>
 										Cancel
 									</button>
-									<button className="mt-6 w-1/2 inline-flex justify-center items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-semibold shadow-md transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+									<button className="cursor-pointer mt-6 w-1/2 inline-flex justify-center items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-semibold shadow-md transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
 										Continue
 									</button>
 								</div>
