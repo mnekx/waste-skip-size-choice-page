@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import SkipCard from "./components/SkipCard";
 import type { SkipOption } from "./types/SkipOption";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+
 import FilterPanel from "./components/FilterPanel";
 import type { FiltersType } from "./types/FiltersType";
 import SkipModal from "./components/SkipModal";
-import { Filter } from "lucide-react";
+
 import { useClickOutside } from "./hooks/useClickOutside";
 import { handleError } from "./utils/handleError";
 import SkipCardSkeleton from "./components/SkipCardSkeleton";
@@ -215,10 +216,10 @@ function App() {
 			<div aria-live="polite" className="sr-only">
 				{selectedSkip ? `${selectedSkip.size}-yard skip selected` : ""}
 			</div>
-			<div className="flex items-center">
+			<div className="relative flex items-center">
 				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
-				<div className="relative z-20 inline-block left-4">
+				<div className="z-20 inline-block left-4">
 					<button
 						onClick={() => setShowFilters((prev) => !prev)}
 						className="bg-blue-600 text-white p-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
@@ -230,7 +231,7 @@ function App() {
 					{showFilters && (
 						<div
 							ref={filterRef}
-							className="absolute left-0 mt-2 w-72 bg-white border border-gray-300 rounded-lg shadow-lg"
+							className="absolute left-0 sm:left-[25%] mt-2 w-[90vw] max-w-sm bg-white border border-gray-300 rounded-lg shadow-lg"
 						>
 							<FilterPanel
 								filters={filters}
@@ -245,9 +246,6 @@ function App() {
 			<section className="relative">
 				<h2 className="text-lg left-4 font-semibold mb-2 ml-3">
 					Showing Skips
-					{/* {filters.allowedOnRoad && " • Allowed on Road"}
-					{filters.allowsHeavyWaste && " • Allows Heavy Waste"}
-					{!filters.allowedOnRoad && !filters.allowsHeavyWaste && " • All"} */}
 					{activeFilters.length > 0 && (
 						<div className="flex flex-wrap gap-2 mt-3">
 							{activeFilters.map(([key]) => (
@@ -318,6 +316,7 @@ function App() {
 						skipList={visibleSkips}
 						isOpen={isModalOpen}
 						onClose={() => setIsModalOpen(false)}
+						key={selectedIndex}
 					/>
 				</div>
 

@@ -13,7 +13,7 @@ export default function FilterPanel({
 	onClear,
 }: FilterPanelProps) {
 	return (
-		<div className="p-4 sm:p-5 space-y-4 text-sm text-gray-700 w-72 sm:w-[95vw] sm:left-1/2 sm:-translate-x-1/2 sm:absolute bg-white border border-gray-300 rounded-lg shadow-lg z-20">
+		<div className="p-4 sm:p-5 space-y-4 text-sm text-gray-700 w-[100%] sm:w-[100vw] sm:max-w-sm sm:absolute sm:left-1/2 sm:-translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg z-20 overflow-hidden">
 			{/* Road & Waste */}
 			<div>
 				<h3 className="text-sm font-semibold mb-2">Road & Waste Options</h3>
