@@ -8,6 +8,7 @@ import SkipModal from "./components/SkipModal";
 import { Filter } from "lucide-react";
 import { useClickOutside } from "./hooks/useClickOutside";
 import { handleError } from "./utils/handleError";
+import SkipCardSkeleton from "./components/SkipCardSkeleton";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -58,6 +59,25 @@ function App() {
 			size12: false,
 			hirePeriod14: false,
 		});
+	};
+
+	const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
+		if (!cards || cards.length === 0) return;
+
+		const activeElement = document.activeElement;
+		const index = Array.from(cards).indexOf(activeElement as HTMLElement);
+
+		if (e.key === "ArrowRight") {
+			const nextIndex = (index + 1) % cards.length;
+			(cards[nextIndex] as HTMLElement).focus();
+			e.preventDefault();
+		}
+		if (e.key === "ArrowLeft") {
+			const prevIndex = (index - 1 + cards.length) % cards.length;
+			(cards[prevIndex] as HTMLElement).focus();
+			e.preventDefault();
+		}
 	};
 
 	const scroll = (direction: "left" | "right") => {
@@ -146,11 +166,26 @@ function App() {
 		fetchSkips();
 	}, []);
 
-	if (loading) return <p className="p-4">Loading skip data...</p>;
+	if (loading) {
+		return (
+			<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
+				<h1 className="text-2xl font-bold mb-4">Choose Your Skip Size</h1>
+				<div className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10">
+					{Array.from({ length: 5 }).map((_, i) => (
+						<SkipCardSkeleton key={i} />
+					))}
+				</div>
+			</main>
+		);
+	}
 	if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
 
 	return (
 		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
+			{/* Accessibility live region */}
+			<div aria-live="polite" className="sr-only">
+				{selectedSkip ? `${selectedSkip.size}-yard skip selected` : ""}
+			</div>
 			<div className="flex items-center">
 				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
 
@@ -225,6 +260,7 @@ function App() {
 								selectedSkip?.size === skip.size
 							}
 							onSelect={() => handleSelectSkip(skip)}
+							onArrowKeyPress={(e) => handleArrowKeyPress(e)}
 						/>
 					))}
 					<SkipModal
