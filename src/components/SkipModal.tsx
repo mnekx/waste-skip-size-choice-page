@@ -4,7 +4,7 @@ import {
 	Transition,
 	TransitionChild,
 } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import {
 	CalendarDays,
 	MapPin,
@@ -24,21 +24,20 @@ export default function SkipModal({
 	selectedIndex,
 	onNav,
 }: SkipModalProps) {
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const skip = skipList[selectedIndex];
 	if (!skip) return null;
 
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
-	const goPrev = () => {
+	const goPrev = useCallback(() => {
 		const newIndex = (selectedIndex - 1 + skipList.length) % skipList.length;
 		onNav(newIndex);
-	};
+	}, [selectedIndex, skipList.length]);
 
-	const goNext = () => {
+	const goNext = useCallback(() => {
 		const newIndex = (selectedIndex + 1) % skipList.length;
 		onNav(newIndex);
-	};
-
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	}, [selectedIndex, skipList.length]);
 
 	const handleContinue = () => {
 		setIsSubmitting(true);
@@ -55,8 +54,7 @@ export default function SkipModal({
 		};
 		if (isOpen) window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isOpen, selectedIndex]);
-
+	}, [isOpen, selectedIndex, goNext, goPrev]);
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
