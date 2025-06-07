@@ -61,6 +61,13 @@ function App() {
 	const visibleSkips = skips.filter((s) => {
 		if (filters.allowedOnRoad && !s.allowedOnRoad) return false;
 		if (filters.allowsHeavyWaste && !s.allowsHeavyWaste) return false;
+
+		const sizeFilters = [];
+		if (filters.size8) sizeFilters.push(8);
+		if (filters.size12) sizeFilters.push(12);
+		if (sizeFilters.length && !sizeFilters.includes(s.size)) return false;
+
+		if (filters.hirePeriod14 && s.hirePeriod !== 14) return false;
 		return true;
 	});
 
