@@ -11,6 +11,7 @@ import { useClickOutside } from "./hooks/useClickOutside";
 import { handleError } from "./utils/handleError";
 import SkipCardSkeleton from "./components/SkipCardSkeleton";
 import formatFilterKey from "./utils/filtering";
+import EmptyState from "./components/EmptyState";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -268,15 +269,7 @@ function App() {
 					)}
 				</h2>
 				{visibleSkips.length === 0 ? (
-					<div className="mt-6 text-center text-gray-500 text-sm">
-						<p>No skips match the selected filters.</p>
-						<button
-							onClick={handleClearFilters}
-							className="mt-2 text-blue-600 hover:underline text-sm"
-						>
-							Clear filters
-						</button>
-					</div>
+					<EmptyState onClearFilters={handleClearFilters} />
 				) : (
 					<>
 						{/* Edge fades */}
