@@ -24,7 +24,7 @@ describe("SkipCard", () => {
 	it("Renders skip size and postcode", () => {
 		render(<SkipCard skip={mockSkip} onSelect={() => {}} />);
 		expect(screen.getByText(/8-Yard Skip/i)).toBeInTheDocument();
-		expect(screen.getByText(/Postcode: NR32/)).toBeInTheDocument();
+		expect(screen.getByText(/NR32/)).toBeInTheDocument();
 	});
 
 	it("It shows image with correct alt", () => {

@@ -5,18 +5,30 @@ export default function SkipCard({
 	skip,
 	isSelected,
 	onSelect,
+	onArrowKeyPress,
 }: {
 	skip: SkipOption;
 	isSelected?: boolean;
 	onSelect: () => void;
+	onArrowKeyPress?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }) {
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 
 	return (
 		<div
+			tabIndex={0}
+			role="button"
+			aria-pressed={isSelected}
 			onClick={onSelect}
-			className={`cursor-pointer snap-start min-w-[260px] max-w-[280px] sm:min-w-[280px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 ${
-				isSelected ? "border-blue-600 ring-2 ring-blue-400" : "border-gray-200"
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					onSelect();
+				}
+				onArrowKeyPress?.(e);
+			}}
+			className={`cursor-pointer snap-start min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 ${
+				isSelected ? "border-blue-600 ring-blue-400" : "border-gray-200"
 			}`}
 		>
 			{skip.imageUrl && (
