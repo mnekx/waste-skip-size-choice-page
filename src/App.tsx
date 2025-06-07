@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import SkipCard from "./components/SkipCard";
 import type { SkipOption } from "./types/SkipOption";
 import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
@@ -30,7 +30,8 @@ function App() {
 	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-	const activeFilters = Object.entries(filters).filter(([_, value]) => value);
+	const activeFilters = Object.entries(filters).filter(([, value]) => value);
+
 
 	const handleRemoveFilter = (key: keyof FiltersType) => {
 		setFilters((prev) => ({ ...prev, [key]: false }));
@@ -71,13 +72,14 @@ function App() {
 		return true;
 	});
 
-	const handleScroll = () => {
-		if (!scrollRef.current) return;
-		const scrollLeft = scrollRef.current.scrollLeft;
-		const cardWidth = 260;
-		const index = Math.round(scrollLeft / cardWidth);
-		setActiveIndex(Math.min(index, visibleSkips.length - 1));
-	};
+	const handleScroll = useCallback(() => {
+	if (!scrollRef.current) return;
+	const scrollLeft = scrollRef.current.scrollLeft;
+	const cardWidth = 260;
+	const index = Math.round(scrollLeft / cardWidth);
+	setActiveIndex(Math.min(index, visibleSkips.length - 1));
+}, [visibleSkips.length]);
+
 
 	const handleClearFilters = () => {
 		setFilters({
