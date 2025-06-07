@@ -1,90 +1,110 @@
-import {
-	Dialog,
-	DialogPanel,
-	DialogTitle,
-	Transition,
-	TransitionChild,
-} from "@headlessui/react";
-import { Fragment } from "react/jsx-runtime";
+import { Dialog, Transition, TransitionChild } from "@headlessui/react";
+import { Fragment } from "react";
 import type { SkipOption } from "../types/SkipOption";
+import {
+	CalendarDays,
+	MapPin,
+	Truck,
+	Weight,
+	PoundSterling,
+} from "lucide-react";
 
-type SkipModalProps = {
-	skip: SkipOption | null;
+export default function SkipModal({
+	isOpen,
+	onClose,
+	skip,
+}: {
 	isOpen: boolean;
 	onClose: () => void;
-};
-
-export default function SkipModal({ skip, isOpen, onClose }: SkipModalProps) {
+	skip: SkipOption | null;
+}) {
 	if (!skip) return null;
 
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-51" onClose={onClose}>
+			<Dialog as="div" className="relative z-50" onClose={onClose}>
 				<TransitionChild
 					as={Fragment}
-					enter="ease-out duration-300"
+					enter="ease-out duration-200"
 					enterFrom="opacity-0"
 					enterTo="opacity-100"
-					leave="ease-in duration-200"
+					leave="ease-in duration-150"
 					leaveFrom="opacity-100"
-					leaveTo="opacity-100"
+					leaveTo="opacity-0"
 				>
 					<div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
 				</TransitionChild>
 
-				<div className="fixed inset-0 overflow-y-auto">
-					<div className="flex min-h-full items-center justify-center p-4">
+				<div className="fixed inset-0 overflow-y-auto p-4">
+					<div className="flex min-h-full items-center justify-center">
 						<TransitionChild
 							as={Fragment}
-							enter="ease-out duration-300"
+							enter="ease-out duration-200"
 							enterFrom="opacity-0 scale-95"
-							enterTo="opacity-0 scale-100"
-							leave="ease-in duration-200"
+							enterTo="opacity-100 scale-100"
+							leave="ease-in duration-150"
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<DialogPanel className="w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all">
-								<DialogTitle className="text-xl font-bold mb-4">
-									{skip.size}-Yard Skip
-								</DialogTitle>
-								<img
-									src={skip.imageUrl}
-									alt={`${skip.size}-yard skip`}
-									className="w-full h-32 object-cover rounded mb-4"
-								/>
-								<ul className="text-sm space-y-1">
-									<li>
-										<strong>Hire:</strong> {skip.hirePeriod} days
-									</li>
-									<li>
-										<strong>Postcode:</strong> {skip.postCode}
-									</li>
-									<li>
-										<strong>On Road:</strong>{" "}
-										{skip.allowedOnRoad ? "Yes" : "No"}
-									</li>
-									<li>
-										<strong>Heavy Waste:</strong>{" "}
-										{skip.allowsHeavyWaste ? "Yes" : "No"}
-									</li>
-									<li>
-										<strong>Total Price:</strong> TZS {total.toLocaleString()}
-									</li>
-								</ul>
-								<div className="mt-6 flex justify-between">
-									<button
-										className="cursor-pointer mt-4 text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors duration-150"
-										onClick={onClose}
-									>
-										Cancel
-									</button>
-									<button className="cursor-pointer mt-6 w-1/2 inline-flex justify-center items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-semibold shadow-md transition-all duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-										Continue
-									</button>
+							<Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-xl bg-white shadow-xl transition-all">
+								{/* Image */}
+								<div className="relative h-48 sm:h-64">
+									<img
+										src={skip.imageUrl}
+										alt={`${skip.size}-yard skip`}
+										className="absolute inset-0 w-full h-full object-cover"
+									/>
+									<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+									<div className="absolute bottom-3 left-4 text-white text-xl font-bold">
+										{skip.size}-Yard Skip
+									</div>
 								</div>
-							</DialogPanel>
+
+								{/* Content */}
+								<div className="p-5 space-y-3">
+									<div className="flex items-center gap-2 text-sm text-gray-700">
+										<CalendarDays className="w-4 h-4 text-blue-500" />
+										Hire Period: {skip.hirePeriod} days
+									</div>
+									<div className="flex items-center gap-2 text-sm text-gray-700">
+										<MapPin className="w-4 h-4 text-green-500" />
+										Postcode: {skip.postCode}
+									</div>
+									<div className="flex items-center gap-2 text-sm text-gray-700">
+										<Truck className="w-4 h-4 text-orange-500" />
+										Road Use:{" "}
+										<span className="font-medium">
+											{skip.allowedOnRoad ? "Allowed" : "Not allowed"}
+										</span>
+									</div>
+									<div className="flex items-center gap-2 text-sm text-gray-700">
+										<Weight className="w-4 h-4 text-purple-500" />
+										Heavy Waste:{" "}
+										<span className="font-medium">
+											{skip.allowsHeavyWaste ? "Yes" : "No"}
+										</span>
+									</div>
+									<div className="flex items-center gap-2 text-base font-semibold text-gray-800 mt-3">
+										<PoundSterling className="w-5 h-5" />
+										{total.toFixed(2)} incl. VAT
+									</div>
+
+									{/* Actions */}
+									<div className="mt-4 flex justify-end gap-4">
+										<button
+											onClick={onClose}
+											className="text-sm text-gray-500 hover:text-gray-700 hover:underline"
+										>
+											Cancel
+										</button>
+										<button className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+											Continue
+										</button>
+									</div>
+								</div>
+							</Dialog.Panel>
 						</TransitionChild>
 					</div>
 				</div>
