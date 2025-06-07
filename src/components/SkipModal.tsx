@@ -26,18 +26,17 @@ export default function SkipModal({
 }: SkipModalProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const skip = skipList[selectedIndex];
-	if (!skip) return null;
 
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 	const goPrev = useCallback(() => {
 		const newIndex = (selectedIndex - 1 + skipList.length) % skipList.length;
 		onNav(newIndex);
-	}, [selectedIndex, skipList.length]);
+	}, [selectedIndex, skipList.length, onNav]);
 
 	const goNext = useCallback(() => {
 		const newIndex = (selectedIndex + 1) % skipList.length;
 		onNav(newIndex);
-	}, [selectedIndex, skipList.length]);
+	}, [selectedIndex, skipList.length, onNav]);
 
 	const handleContinue = () => {
 		setIsSubmitting(true);
