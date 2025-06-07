@@ -214,7 +214,7 @@ function App() {
 				{/* Skip cards carousel */}
 				<div
 					ref={scrollRef}
-					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10"
+					className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pt-4 pb-4 px-10"
 				>
 					{visibleSkips.map((skip, i) => (
 						<SkipCard
