@@ -283,7 +283,7 @@ function App() {
 					))}
 					<SkipModal
 						selectedIndex={selectedIndex}
-						setSelectedIndex={handleModalNavigate}
+						onNav={handleModalNavigate}
 						skipList={visibleSkips}
 						isOpen={isModalOpen}
 						onClose={() => setIsModalOpen(false)}

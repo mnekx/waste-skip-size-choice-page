@@ -22,7 +22,7 @@ export default function SkipModal({
 	onClose,
 	skipList,
 	selectedIndex,
-	setSelectedIndex,
+	onNav,
 }: SkipModalProps) {
 	const skip = skipList[selectedIndex];
 	if (!skip) return null;
@@ -30,12 +30,12 @@ export default function SkipModal({
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
 	const goPrev = () => {
 		const newIndex = (selectedIndex - 1 + skipList.length) % skipList.length;
-		setSelectedIndex(newIndex);
+		onNav(newIndex);
 	};
 
 	const goNext = () => {
 		const newIndex = (selectedIndex + 1) % skipList.length;
-		setSelectedIndex(newIndex);
+		onNav(newIndex);
 	};
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
