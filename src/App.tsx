@@ -60,6 +60,25 @@ function App() {
 		});
 	};
 
+	const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
+		if (!cards || cards.length === 0) return;
+
+		const activeElement = document.activeElement;
+		const index = Array.from(cards).indexOf(activeElement as HTMLElement);
+
+		if (e.key === "ArrowRight") {
+			const nextIndex = (index + 1) % cards.length;
+			(cards[nextIndex] as HTMLElement).focus();
+			e.preventDefault();
+		}
+		if (e.key === "ArrowLeft") {
+			const prevIndex = (index - 1 + cards.length) % cards.length;
+			(cards[prevIndex] as HTMLElement).focus();
+			e.preventDefault();
+		}
+	};
+
 	const scroll = (direction: "left" | "right") => {
 		if (!scrollRef.current) return;
 		const scrollAmount = 260;
@@ -225,6 +244,7 @@ function App() {
 								selectedSkip?.size === skip.size
 							}
 							onSelect={() => handleSelectSkip(skip)}
+							onArrowKeyPress={(e) => handleArrowKeyPress(e)}
 						/>
 					))}
 					<SkipModal
