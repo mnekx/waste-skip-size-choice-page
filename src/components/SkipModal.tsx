@@ -1,5 +1,5 @@
 import { Dialog, Transition, TransitionChild } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import type { SkipOption } from "../types/SkipOption";
 import {
 	CalendarDays,
@@ -21,6 +21,16 @@ export default function SkipModal({
 	if (!skip) return null;
 
 	const total = skip.priceB4VAT + (skip.priceB4VAT * skip.vat) / 100;
+
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const handleContinue = () => {
+		setIsSubmitting(true);
+		setTimeout(() => {
+			setIsSubmitting(false);
+			onClose();
+		}, 1000);
+	};
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
@@ -99,8 +109,12 @@ export default function SkipModal({
 										>
 											Cancel
 										</button>
-										<button className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-											Continue
+										<button
+											onClick={handleContinue}
+											disabled={isSubmitting}
+											className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+										>
+											{isSubmitting ? "Processing..." : "Continue"}
 										</button>
 									</div>
 								</div>
