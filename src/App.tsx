@@ -9,6 +9,7 @@ import { Filter } from "lucide-react";
 import { useClickOutside } from "./hooks/useClickOutside";
 import { handleError } from "./utils/handleError";
 import SkipCardSkeleton from "./components/SkipCardSkeleton";
+import formatFilterKey from "./utils/filtering";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -27,6 +28,11 @@ function App() {
 	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+	const activeFilters = Object.entries(filters).filter(([_, value]) => value);
+
+	const handleRemoveFilter = (key: keyof FiltersType) => {
+		setFilters((prev) => ({ ...prev, [key]: false }));
+	};
 
 	const handleModalNavigate = (newIndex: number) => {
 		const skip = skips[newIndex];
@@ -239,9 +245,29 @@ function App() {
 			<section className="relative">
 				<h2 className="text-lg left-4 font-semibold mb-2 ml-3">
 					Showing Skips
-					{filters.allowedOnRoad && " • Allowed on Road"}
+					{/* {filters.allowedOnRoad && " • Allowed on Road"}
 					{filters.allowsHeavyWaste && " • Allows Heavy Waste"}
-					{!filters.allowedOnRoad && !filters.allowsHeavyWaste && " • All"}
+					{!filters.allowedOnRoad && !filters.allowsHeavyWaste && " • All"} */}
+					{activeFilters.length > 0 && (
+						<div className="flex flex-wrap gap-2 mt-3">
+							{activeFilters.map(([key]) => (
+								<span
+									key={key}
+									className="flex items-center bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
+								>
+									{formatFilterKey(key)}
+									<button
+										onClick={() => handleRemoveFilter(key as keyof FiltersType)}
+										className="ml-2 text-blue-500 hover:text-blue-700 focus:outline-none"
+										aria-label={`Remove ${key} filter`}
+										tabIndex={0}
+									>
+										✕
+									</button>
+								</span>
+							))}
+						</div>
+					)}
 				</h2>
 
 				{/* Edge fades */}
