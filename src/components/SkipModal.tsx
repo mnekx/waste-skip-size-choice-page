@@ -13,6 +13,7 @@ import {
 	PoundSterling,
 	ChevronRight,
 	ChevronLeft,
+	X,
 } from "lucide-react";
 import type { SkipModalProps } from "../types/SkipModalProps";
 
@@ -74,6 +75,14 @@ export default function SkipModal({
 							leaveTo="opacity-0 scale-95"
 						>
 							<DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-xl bg-white shadow-xl transition-all">
+								{/**Close button */}
+								<button
+									onClick={onClose}
+									className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+								>
+									<X className="w-5 h-5" />
+								</button>
+
 								{/* Image */}
 								<div className="relative h-48 sm:h-64">
 									<img
