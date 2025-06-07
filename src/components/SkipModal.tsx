@@ -4,7 +4,7 @@ import {
 	Transition,
 	TransitionChild,
 } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
 	CalendarDays,
 	MapPin,
@@ -48,6 +48,16 @@ export default function SkipModal({
 		}, 1000);
 	};
 
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "ArrowLeft") goPrev();
+			if (e.key === "ArrowRight") goNext();
+		};
+		if (isOpen) window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [isOpen, selectedIndex]);
+
+
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -74,11 +84,12 @@ export default function SkipModal({
 							leaveFrom="opacity-100 scale-100"
 							leaveTo="opacity-0 scale-95"
 						>
-							<DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-xl bg-white shadow-xl transition-all">
+							<DialogPanel className="relative w-full max-w-lg transform overflow-visible rounded-xl bg-white shadow-xl transition-all">
 								{/**Close button */}
 								<button
 									onClick={onClose}
-									className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+									className="absolute cursor-pointer top-4 right-4 z-20 p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+									aria-label="Close"
 								>
 									<X className="w-5 h-5" />
 								</button>
@@ -99,13 +110,13 @@ export default function SkipModal({
 								{/* Carousel Arrows */}
 								<button
 									onClick={goPrev}
-									className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-1 hover:bg-gray-100"
+									className="absolute right-[96%] top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-3 hover:bg-gray-100 cursor-pointer transition"
 								>
 									<ChevronLeft className="w-5 h-5" />
 								</button>
 								<button
 									onClick={goNext}
-									className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-1 hover:bg-gray-100"
+									className="absolute left-[96%] top-1/2 -translate-y-1/2 bg-white border rounded-full shadow p-3 hover:bg-gray-100 cursor-pointer transition"
 								>
 									<ChevronRight className="w-5 h-5" />
 								</button>
