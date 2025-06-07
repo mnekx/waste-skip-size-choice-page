@@ -28,7 +28,7 @@ export default function SkipCard({
 				onArrowKeyPress?.(e);
 			}}
 			className={`cursor-pointer snap-start min-w-[260px] max-w-[300px] bg-white rounded-xl shadow p-4 mr-4 flex-shrink-0 border transition-all duration-200 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 ${
-				isSelected ? "border-blue-600 ring-blue-400" : "border-gray-200"
+				isSelected ? "border-blue-600 ring-blue-400 animate-[pulse_1s_ease-in-out]" : "border-gray-200"
 			}`}
 		>
 			{skip.imageUrl && (
