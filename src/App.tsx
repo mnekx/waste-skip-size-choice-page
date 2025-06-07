@@ -28,6 +28,10 @@ function App() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
+	const handleModalNavigate = (newIndex: number) => {
+		setSelectedIndex(newIndex);
+		scrollToCard(newIndex);
+	};
 
 	const handleSelectSkip = (skip: SkipOption) => {
 		const index = visibleSkips.findIndex((s) => s === skip);
@@ -82,6 +86,16 @@ function App() {
 			(cards[prevIndex] as HTMLElement).focus();
 			e.preventDefault();
 		}
+	};
+
+	const scrollToCard = (index: number) => {
+		if (!scrollRef.current) return;
+		const cardWidth = 260; // Or your exact card size including margin
+		const scrollAmount = index * cardWidth;
+		scrollRef.current.scrollTo({
+			left: scrollAmount,
+			behavior: "smooth",
+		});
 	};
 
 	const scroll = (direction: "left" | "right") => {
@@ -269,7 +283,7 @@ function App() {
 					))}
 					<SkipModal
 						selectedIndex={selectedIndex}
-						setSelectedIndex={setSelectedIndex}
+						setSelectedIndex={handleModalNavigate}
 						skipList={visibleSkips}
 						isOpen={isModalOpen}
 						onClose={() => setIsModalOpen(false)}
