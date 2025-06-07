@@ -112,7 +112,7 @@ export default function SkipModal({
 										<button
 											onClick={handleContinue}
 											disabled={isSubmitting}
-											className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+											className="w-[30%] bg-blue-600 text-white py-1.5 rounded-md text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 hover:ring-2 hover:ring-offset-2 cursor-pointer hover:ring-blue-300"
 										>
 											{isSubmitting ? "Processing..." : "Continue"}
 										</button>
