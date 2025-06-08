@@ -209,7 +209,7 @@ function App() {
 
 			<FiltersSummary
 				activeFilters={
-					Object.entries(filters) as [keyof FiltersType, boolean][]
+					Object.entries(filters).filter(([, value]) => value) as [keyof FiltersType, boolean][]
 				}
 				onRemoveFilter={handleRemoveFilter}
 			/>
