@@ -90,7 +90,7 @@ const SkipModalWithTransition = ({
 										{/* Info Section */}
 										<div className="px-6 py-4 space-y-3">
 											<p className="text-sm text-gray-600">
-												<strong>Area:</strong> {currentSkip?.area}
+												<strong>Size:</strong> {currentSkip?.size}-Yards
 											</p>
 											<p className="text-sm text-gray-600">
 												<strong>Hire Period:</strong> {currentSkip?.hirePeriod}{" "}
