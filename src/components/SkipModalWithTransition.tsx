@@ -10,6 +10,7 @@ interface Props {
   skipList: SkipOption[];
   onClose: () => void;
   onNav: (index: number) => void;
+  selectedSkip?: SkipOption | null;	
 }
 
 const SkipModalWithTransition = ({
@@ -18,6 +19,7 @@ const SkipModalWithTransition = ({
   skipList,
   onClose,
   onNav,
+  selectedSkip
 }: Props) => {
   const currentSkip = skipList[selectedIndex];
 
@@ -61,7 +63,7 @@ const SkipModalWithTransition = ({
                   >
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-lg font-medium">
-                        {currentSkip?.size}-Yard Skip Details
+                        {selectedSkip?.size}-Yard Skip Details
                       </h3>
                       <button
                         onClick={onClose}

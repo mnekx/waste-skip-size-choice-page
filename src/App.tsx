@@ -17,7 +17,7 @@ function App() {
 	const [error, setError] = useState<string | null>(null);
 	const [canScroll, setCanScroll] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [_, setSelectedSkip] = useState<SkipOption | null>(null);
+	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 	const [showFilters, setShowFilters] = useState(false);
@@ -235,6 +235,7 @@ function App() {
 				isOpen={isModalOpen}
 				onClose={() => setIsModalOpen(false)}
 				onNav={handleModalNavigate}
+				selectedSkip={selectedSkip}
 			/>
 
 			{visibleSkips.length === 0 && (
