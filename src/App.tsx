@@ -10,6 +10,7 @@ import FiltersSummary from "./sections/FilterSummary";
 import SkipCarousel from "./components/SkipCarousel";
 import SkipModalWithTransition from "./components/SkipModalWithTransition";
 import type { RawSkipType } from "./types/RawSkipType";
+import { ErrorComponent } from "./components/ErrorComponent";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -197,14 +198,7 @@ function App() {
 	}
 	if (error)
 		return (
-			<div
-				role="alert"
-				className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-			>
-				<strong className="font-bold">
-					Upsss! There has been an error...
-				</strong>
-			</div>
+			<ErrorComponent message="An error occurred while fetching skips. Please try again later." />
 		);
 
 	return (
