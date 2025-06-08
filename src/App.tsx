@@ -307,7 +307,6 @@ function App() {
 								skipList={visibleSkips}
 								isOpen={isModalOpen}
 								onClose={() => setIsModalOpen(false)}
-								key={selectedIndex}
 							/>
 						</div>
 
