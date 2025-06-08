@@ -12,6 +12,7 @@ import { handleError } from "./utils/handleError";
 import SkipCardSkeleton from "./components/SkipCardSkeleton";
 import formatFilterKey from "./utils/filtering";
 import EmptyState from "./components/EmptyState";
+import type { RawSkipType } from "./types/RawSkipType";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -20,18 +21,18 @@ function App() {
 	const [canScroll, setCanScroll] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const scrollRef = useRef<HTMLDivElement | null>(null);
-	const [filters, setFilters] = useState({
+	const defaultFiltersState = {
 		allowedOnRoad: false,
 		allowsHeavyWaste: false,
 		size8: false,
 		size12: false,
 		hirePeriod14: false,
-	});
+	};
+	const [filters, setFilters] = useState(defaultFiltersState);
 	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 	const activeFilters = Object.entries(filters).filter(([, value]) => value);
-
 
 	const handleRemoveFilter = (key: keyof FiltersType) => {
 		setFilters((prev) => ({ ...prev, [key]: false }));
@@ -73,22 +74,15 @@ function App() {
 	});
 
 	const handleScroll = useCallback(() => {
-	if (!scrollRef.current) return;
-	const scrollLeft = scrollRef.current.scrollLeft;
-	const cardWidth = 260;
-	const index = Math.round(scrollLeft / cardWidth);
-	setActiveIndex(Math.min(index, visibleSkips.length - 1));
-}, [visibleSkips.length]);
-
+		if (!scrollRef.current) return;
+		const scrollLeft = scrollRef.current.scrollLeft;
+		const cardWidth = 260;
+		const index = Math.round(scrollLeft / cardWidth);
+		setActiveIndex(Math.min(index, visibleSkips.length - 1));
+	}, [visibleSkips.length]);
 
 	const handleClearFilters = () => {
-		setFilters({
-			allowedOnRoad: false,
-			allowsHeavyWaste: false,
-			size8: false,
-			size12: false,
-			hirePeriod14: false,
-		});
+		setFilters(defaultFiltersState);
 	};
 
 	const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -161,39 +155,23 @@ function App() {
 				if (!res.ok) throw new Error("Failed to fetch skip data");
 				const rawData: [] = await res.json();
 
-				const mappedData: SkipOption[] = rawData.map(
-					(item: {
-						size: number;
-						hire_period_days: number;
-						transport_cost: number;
-						per_tonne_cost: number;
-						price_before_vat: number;
-						vat: number;
-						postcode: string;
-						area: string;
-						forbidden: boolean;
-						created_at: string;
-						updated_at: string;
-						allowed_on_road: boolean;
-						allows_heavy_waste: boolean;
-					}) => ({
-						size: item.size,
-						hirePeriod: item.hire_period_days,
-						transportCost: item.transport_cost,
-						perTonneCost: item.per_tonne_cost,
-						priceB4VAT: item.price_before_vat,
-						vat: item.vat,
-						postCode: item.postcode,
-						area: item.area,
-						forbidden: item.forbidden,
-						createdAt: item.created_at,
-						updatedAt: item.updated_at,
-						allowedOnRoad: item.allowed_on_road,
-						allowsHeavyWaste: item.allows_heavy_waste,
-						imageUrl:
-							"https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
-					})
-				);
+				const mappedData: SkipOption[] = rawData.map((item: RawSkipType) => ({
+					size: item.size,
+					hirePeriod: item.hire_period_days,
+					transportCost: item.transport_cost,
+					perTonneCost: item.per_tonne_cost,
+					priceB4VAT: item.price_before_vat,
+					vat: item.vat,
+					postCode: item.postcode,
+					area: item.area,
+					forbidden: item.forbidden,
+					createdAt: item.created_at,
+					updatedAt: item.updated_at,
+					allowedOnRoad: item.allowed_on_road,
+					allowsHeavyWaste: item.allows_heavy_waste,
+					imageUrl:
+						"https://yozbrydxdlcxghkphhtq.supabase.co/storage/v1/object/public/skips/skip-sizes/5-yarder-skip.jpg",
+				}));
 
 				setSkips(mappedData);
 			} catch (err: unknown) {
