@@ -195,7 +195,17 @@ function App() {
 			</main>
 		);
 	}
-	if (error) return <div className="text-red-500">{error}</div>;
+	if (error)
+		return (
+			<div
+				role="alert"
+				className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+			>
+				<strong className="font-bold">
+					Upsss! There has been an error...
+				</strong>
+			</div>
+		);
 
 	return (
 		<main className="p-4">
@@ -209,7 +219,10 @@ function App() {
 
 			<FiltersSummary
 				activeFilters={
-					Object.entries(filters) as [keyof FiltersType, boolean][]
+					Object.entries(filters).filter(([, value]) => value) as [
+						keyof FiltersType,
+						boolean
+					][]
 				}
 				onRemoveFilter={handleRemoveFilter}
 			/>

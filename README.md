@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# 🛠️ Skip Size Selection App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive and accessible React-based app that helps users select the most suitable waste skip size, designed with a focus on clean UI/UX, maintainable code and responsiveness.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* 🔍 **Filter Panel**: Users can filter skip options by hire period, volume, or price using a floating, toggleable panel.
+* 🧹 **Component-Based Design**: Built with modular, reusable components for ease of maintenance and scalability.
+* 🖼️ **Carousel Display**: Filtered skip options are shown in a horizontally scrollable carousel.
+* 🔘 **Selection Modal**: On clicking “Select Skip,” a modal shows skip details and allows continuation.
+* 🎨 **Tailwind CSS**: Used for consistent and elegant styling.
+* ✅ **Accessibility**: Implemented with keyboard navigation and Headless UI components.
+* 🧪 **Testing**: Tested using **Vitest** and **@testing-library/react** for unit and interaction tests.
 
-## Expanding the ESLint configuration
+## ⚙️ Approach
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 1. **Project Setup**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+* Initialized with `Vite` using React + TypeScript.
+* Tailwind CSS configured for rapid UI prototyping.
+* ESLint and Prettier added for consistent code quality.
+
+### 2. **Data-Driven Architecture**
+
+* Skip options are loaded from a remote JSON endpoint or local mock data.
+* Each skip has attributes like `size`, `price`, `hirePeriod`
+* A single image has been used for all skips, since the link API is not responding with images for each skip item
+
+### 3. **Filtering Logic**
+
+* A floating panel allows users to filter using checkboxes.
+* State is maintained using `useState` and filters are applied with `Array.prototype.filter`.
+
+### 4. **UI/UX Patterns**
+
+* Carousel built using a scrollable container and `useRef`.
+* Modal displayed using Headless UI’s `<Dialog />` component for accessibility.
+* Floating filter panel toggles visibility, improving space use especially on mobile.
+
+### 5. **Testing Strategy**
+
+* Unit tests validate filtering, selection, and modal interaction.
+* Accessibility tests ensure that keyboard and screen reader interactions are valid.
+
+## 📂 Folder Structure
+
+```
+src/
+├── components/         # Reusable components (FilterPanel, SkipCard, SkipModal, etc.)
+├── sections/               # Mock or fetched data
+├── hooks/              # Custom hooks (e.g., useClickOutside)
+├── __tests__/          # Vitest + RTL test cases
+├── sections/           # Section components
+├── App.tsx             # Root component
+├── main.tsx            # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🥪 Running the App
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm install
+npm run dev
 ```
+
+## 🥪 Running Tests
+
+```bash
+npm run test
+```
+
+## 📌 Future Improvements
+
+* Use local storage to enhance performance
+* Add lazy loading, pages for skips, just incase there might be millions of skips
+* Further refactoring for subcomponents like SkipModalWithTransition, FilterPanel etc
+* Add more unit and integration tests
