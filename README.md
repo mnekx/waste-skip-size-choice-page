@@ -1,6 +1,6 @@
 # 🛠️ Skip Size Selection App
 
-A responsive and accessible React-based app that helps users select the most suitable waste skip size, designed with a focus on clean UI/UX, maintainable code, and interactive filtering.
+A responsive and accessible React-based app that helps users select the most suitable waste skip size, designed with a focus on clean UI/UX, maintainable code and responsiveness.
 
 ## 🚀 Features
 
