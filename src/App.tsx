@@ -9,6 +9,7 @@ import Header from "./sections/Header";
 import FiltersSummary from "./sections/FilterSummary";
 import SkipCarousel from "./components/SkipCarousel";
 import SkipModalWithTransition from "./components/SkipModalWithTransition";
+import type { RawSkipType } from "./types/RawSkipType";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -16,7 +17,7 @@ function App() {
 	const [error, setError] = useState<string | null>(null);
 	const [canScroll, setCanScroll] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
+	const [_, setSelectedSkip] = useState<SkipOption | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 	const [showFilters, setShowFilters] = useState(false);
@@ -151,7 +152,7 @@ function App() {
 				if (!res.ok) throw new Error("Failed to fetch skip data");
 				const rawData: [] = await res.json();
 
-				const mappedData: SkipOption[] = rawData.map((item: any) => ({
+				const mappedData: SkipOption[] = rawData.map((item: RawSkipType) => ({
 					size: item.size,
 					hirePeriod: item.hire_period_days,
 					transportCost: item.transport_cost,
