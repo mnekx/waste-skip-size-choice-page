@@ -23,7 +23,8 @@ A responsive and accessible React-based app that helps users select the most sui
 ### 2. **Data-Driven Architecture**
 
 * Skip options are loaded from a remote JSON endpoint or local mock data.
-* Each skip has attributes like `size`, `price`, `hirePeriod`, and `image`.
+* Each skip has attributes like `size`, `price`, `hirePeriod`
+* A single image has been used for all skips, since the link API is not responding with images for each skip item
 
 ### 3. **Filtering Logic**
 
