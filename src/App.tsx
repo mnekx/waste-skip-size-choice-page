@@ -1,18 +1,14 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import SkipCard from "./components/SkipCard";
+import SkipSkeletonCarousel from "./components/SkipSkelectonCarousel";
+import EmptyState from "./components/EmptyState";
 import type { SkipOption } from "./types/SkipOption";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
-
-import FilterPanel from "./components/FilterPanel";
 import type { FiltersType } from "./types/FiltersType";
-import SkipModal from "./components/SkipModal";
-
 import { useClickOutside } from "./hooks/useClickOutside";
 import { handleError } from "./utils/handleError";
-import SkipCardSkeleton from "./components/SkipCardSkeleton";
-import formatFilterKey from "./utils/filtering";
-import EmptyState from "./components/EmptyState";
-import type { RawSkipType } from "./types/RawSkipType";
+import Header from "./sections/Header";
+import FiltersSummary from "./sections/FilterSummary";
+import SkipCarousel from "./components/SkipCarousel";
+import SkipModalWithTransition from "./components/SkipModalWithTransition";
 
 function App() {
 	const [skips, setSkips] = useState<SkipOption[]>([]);
@@ -20,45 +16,38 @@ function App() {
 	const [error, setError] = useState<string | null>(null);
 	const [canScroll, setCanScroll] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(0);
+	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+	const [showFilters, setShowFilters] = useState(false);
+
 	const scrollRef = useRef<HTMLDivElement | null>(null);
-	const defaultFiltersState = {
+	const filterRef = useRef<HTMLDivElement>(null);
+
+	const [filters, setFilters] = useState<FiltersType>({
 		allowedOnRoad: false,
 		allowsHeavyWaste: false,
 		size8: false,
 		size12: false,
 		hirePeriod14: false,
-	};
-	const [filters, setFilters] = useState(defaultFiltersState);
-	const [selectedSkip, setSelectedSkip] = useState<SkipOption | null>(null);
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-	const activeFilters = Object.entries(filters).filter(([, value]) => value);
+	});
 
-	const handleRemoveFilter = (key: keyof FiltersType) => {
+	// const activeFilters = Object.entries(filters).filter(([, value]) => value);
+
+	const handleRemoveFilter = (key: keyof FiltersType) =>
 		setFilters((prev) => ({ ...prev, [key]: false }));
-	};
 
-	const handleModalNavigate = (newIndex: number) => {
-		const skip = skips[newIndex];
-		if (!skip) return;
-		handleSelectSkip(skip);
-		scrollToCard(newIndex);
-	};
-
-	const handleSelectSkip = (skip: SkipOption) => {
-		const index = visibleSkips.findIndex((s) => s === skip);
-		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
-		if (!cards || cards.length === 0) return;
-		(cards[index] as HTMLElement).focus(); // Focus the selected card
-		setSelectedIndex(index);
-		setSelectedSkip(skip);
-		setIsModalOpen(true);
-	};
-	const [showFilters, setShowFilters] = useState(false);
-
-	const handleFilterChange = (key: keyof FiltersType) => {
+	const handleFilterChange = (key: keyof FiltersType) =>
 		setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
-	};
+
+	const handleClearFilters = () =>
+		setFilters({
+			allowedOnRoad: false,
+			allowsHeavyWaste: false,
+			size8: false,
+			size12: false,
+			hirePeriod14: false,
+		});
 
 	const visibleSkips = skips.filter((s) => {
 		if (filters.allowedOnRoad && !s.allowedOnRoad) return false;
@@ -73,45 +62,28 @@ function App() {
 		return true;
 	});
 
-	const handleScroll = useCallback(() => {
-		if (!scrollRef.current) return;
-		const scrollLeft = scrollRef.current.scrollLeft;
-		const cardWidth = 260;
-		const index = Math.round(scrollLeft / cardWidth);
-		setActiveIndex(Math.min(index, visibleSkips.length - 1));
-	}, [visibleSkips.length]);
-
-	const handleClearFilters = () => {
-		setFilters(defaultFiltersState);
-	};
-
-	const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleSelectSkip = (skip: SkipOption) => {
+		const index = visibleSkips.findIndex((s) => s === skip);
 		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
 		if (!cards || cards.length === 0) return;
 
-		const activeElement = document.activeElement;
-		const index = Array.from(cards).indexOf(activeElement as HTMLElement);
+		(cards[index] as HTMLElement).focus();
+		setSelectedIndex(index);
+		setSelectedSkip(skip);
+		setIsModalOpen(true);
+	};
 
-		if (e.key === "ArrowRight") {
-			const nextIndex = (index + 1) % cards.length;
-			(cards[nextIndex] as HTMLElement).focus();
-			e.preventDefault();
-		}
-		if (e.key === "ArrowLeft") {
-			const prevIndex = (index - 1 + cards.length) % cards.length;
-			(cards[prevIndex] as HTMLElement).focus();
-			e.preventDefault();
-		}
+	const handleModalNavigate = (newIndex: number) => {
+		const skip = skips[newIndex];
+		if (!skip) return;
+		handleSelectSkip(skip);
+		scrollToCard(newIndex);
 	};
 
 	const scrollToCard = (index: number) => {
 		if (!scrollRef.current) return;
-		const cardWidth = 260; // Or your exact card size including margin
-		const scrollAmount = index * cardWidth;
-		scrollRef.current.scrollTo({
-			left: scrollAmount,
-			behavior: "smooth",
-		});
+		const scrollAmount = index * 260;
+		scrollRef.current.scrollTo({ left: scrollAmount, behavior: "smooth" });
 	};
 
 	const scroll = (direction: "left" | "right") => {
@@ -123,7 +95,32 @@ function App() {
 		});
 	};
 
-	const filterRef = useRef<HTMLDivElement>(null);
+	const handleArrowKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		const cards = scrollRef.current?.querySelectorAll('[role="button"]');
+		if (!cards?.length) return;
+
+		const index = Array.from(cards).indexOf(
+			document.activeElement as HTMLElement
+		);
+
+		if (e.key === "ArrowRight") {
+			const next = (index + 1) % cards.length;
+			(cards[next] as HTMLElement).focus();
+			e.preventDefault();
+		}
+		if (e.key === "ArrowLeft") {
+			const prev = (index - 1 + cards.length) % cards.length;
+			(cards[prev] as HTMLElement).focus();
+			e.preventDefault();
+		}
+	};
+
+	const handleScroll = useCallback(() => {
+		if (!scrollRef.current) return;
+		const scrollLeft = scrollRef.current.scrollLeft;
+		const index = Math.round(scrollLeft / 260);
+		setActiveIndex(Math.min(index, visibleSkips.length - 1));
+	}, [visibleSkips.length]);
 
 	useClickOutside(filterRef, () => setShowFilters(false));
 
@@ -133,7 +130,6 @@ function App() {
 			const el = scrollRef.current;
 			setCanScroll(el.scrollWidth > el.clientWidth);
 		};
-
 		checkScroll();
 		window.addEventListener("resize", checkScroll);
 		return () => window.removeEventListener("resize", checkScroll);
@@ -144,7 +140,7 @@ function App() {
 		if (!el) return;
 		el.addEventListener("scroll", handleScroll);
 		return () => el.removeEventListener("scroll", handleScroll);
-	}, [visibleSkips.length, handleScroll]);
+	}, [handleScroll, visibleSkips.length]);
 
 	useEffect(() => {
 		const fetchSkips = async () => {
@@ -155,7 +151,7 @@ function App() {
 				if (!res.ok) throw new Error("Failed to fetch skip data");
 				const rawData: [] = await res.json();
 
-				const mappedData: SkipOption[] = rawData.map((item: RawSkipType) => ({
+				const mappedData: SkipOption[] = rawData.map((item: any) => ({
 					size: item.size,
 					hirePeriod: item.hire_period_days,
 					transportCost: item.transport_cost,
@@ -186,144 +182,63 @@ function App() {
 
 	if (loading) {
 		return (
-			<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
-				<h1 className="text-2xl font-bold mb-4">Choose Your Skip Size</h1>
-				<div className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pb-2 px-10">
-					{Array.from({ length: 5 }).map((_, i) => (
-						<SkipCardSkeleton key={i} />
-					))}
-				</div>
+			<main className="p-4 max-w-screen-xl mx-auto pt-32 space-y-6">
+				<Header
+					showFilters={showFilters}
+					setShowFilters={setShowFilters}
+					filters={filters}
+					onFilterChange={handleFilterChange}
+					onClearFilters={handleClearFilters}
+				/>
+				<SkipSkeletonCarousel />
 			</main>
 		);
 	}
-	if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
+	if (error) return <div className="text-red-500">{error}</div>;
 
 	return (
-		<main className="relative p-4 max-w-screen-xl mx-auto space-y-6 pt-32">
-			{/* Accessibility live region */}
-			<div aria-live="polite" className="sr-only">
-				{selectedSkip ? `${selectedSkip.size}-yard skip selected` : ""}
-			</div>
-			<div className="relative flex items-center">
-				<h1 className="text-2xl font-bold">Choose Your Skip Size</h1>
+		<main className="p-4">
+			<Header
+				showFilters={showFilters}
+				setShowFilters={setShowFilters}
+				filters={filters}
+				onFilterChange={handleFilterChange}
+				onClearFilters={handleClearFilters}
+			/>
 
-				<div className="z-20 inline-block left-4">
-					<button
-						onClick={() => setShowFilters((prev) => !prev)}
-						className="bg-blue-600 text-white p-2 m-2 rounded-full shadow-md hover:bg-blue-700 focus:outline-none"
-						aria-label="Toggle filters"
-					>
-						<Filter className="w-5 h-5" />
-					</button>
+			<FiltersSummary
+				activeFilters={
+					Object.entries(filters) as [keyof FiltersType, boolean][]
+				}
+				onRemoveFilter={handleRemoveFilter}
+			/>
 
-					{showFilters && (
-						<div
-							ref={filterRef}
-							className="absolute left-0 sm:left-[25%] mt-2 w-[90vw] max-w-sm bg-white border border-gray-300 rounded-lg shadow-lg"
-						>
-							<FilterPanel
-								filters={filters}
-								onChange={handleFilterChange}
-								onClear={handleClearFilters}
-							/>
-						</div>
-					)}
-				</div>
-			</div>
+			<SkipCarousel
+				visibleSkips={visibleSkips}
+				canScroll={canScroll}
+				activeIndex={activeIndex}
+				scrollRef={scrollRef}
+				onArrowKeyPress={handleArrowKeyPress}
+				onSelectSkip={handleSelectSkip}
+				onScrollLeft={() => scroll("left")}
+				onScrollRight={() => scroll("right")}
+				// selectedSkip={selectedSkip}
+				// selectedIndex={selectedIndex}
+				// isModalOpen={isModalOpen}
+				// onModalClose={() => setIsModalOpen(false)}
+				// onModalNavigate={handleModalNavigate}
+			/>
+			<SkipModalWithTransition
+				selectedIndex={selectedIndex}
+				skipList={visibleSkips}
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				onNav={handleModalNavigate}
+			/>
 
-			<section className="relative">
-				<h2 className="text-lg left-4 font-semibold mb-2 ml-3">
-					Showing Skips
-					{activeFilters.length > 0 && (
-						<div className="flex flex-wrap gap-2 mt-3">
-							{activeFilters.map(([key]) => (
-								<span
-									key={key}
-									className="flex items-center bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
-								>
-									{formatFilterKey(key)}
-									<button
-										onClick={() => handleRemoveFilter(key as keyof FiltersType)}
-										className="ml-2 text-blue-500 hover:text-blue-700 focus:outline-none"
-										aria-label={`Remove ${key} filter`}
-										tabIndex={0}
-									>
-										✕
-									</button>
-								</span>
-							))}
-						</div>
-					)}
-				</h2>
-				{visibleSkips.length === 0 ? (
-					<EmptyState onClearFilters={handleClearFilters} />
-				) : (
-					<>
-						{/* Edge fades */}
-						<div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-white via-white/60 to-transparent pointer-events-none z-10 hidden md:block" />
-						<div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-white via-white/60 to-transparent pointer-events-none z-10 hidden md:block" />
-
-						{/* Arrows */}
-						{canScroll && (
-							<>
-								<button
-									onClick={() => scroll("left")}
-									className="hidden md:flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm border border-gray-300 hover:bg-white shadow-lg rounded-full w-11 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-									aria-label="Scroll left"
-								>
-									<ChevronLeft className="w-6 h-6 text-gray-700" />
-								</button>
-
-								<button
-									onClick={() => scroll("right")}
-									className="hidden md:flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 backdrop-blur-sm border border-gray-300 hover:bg-white shadow-lg rounded-full w-11 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-									aria-label="Scroll right"
-								>
-									<ChevronRight className="w-6 h-6 text-gray-700" />
-								</button>
-							</>
-						)}
-
-						{/* Skip cards carousel */}
-						<div
-							ref={scrollRef}
-							className="flex overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory space-x-4 pt-4 pb-4 px-10"
-						>
-							{visibleSkips.map((skip, i) => (
-								<SkipCard
-									key={i}
-									skip={skip}
-									isSelected={
-										selectedSkip?.postCode === skip.postCode &&
-										selectedSkip?.size === skip.size
-									}
-									onSelect={() => handleSelectSkip(skip)}
-									onArrowKeyPress={(e) => handleArrowKeyPress(e)}
-								/>
-							))}
-							<SkipModal
-								selectedIndex={selectedIndex}
-								onNav={handleModalNavigate}
-								skipList={visibleSkips}
-								isOpen={isModalOpen}
-								onClose={() => setIsModalOpen(false)}
-							/>
-						</div>
-
-						{/* Mobile indicator dots */}
-						<div className="flex justify-center mt-2 md:hidden">
-							{visibleSkips.map((_, i) => (
-								<div
-									key={i}
-									className={`w-2 h-2 mx-1 rounded-full transition-all duration-300 ${
-										i === activeIndex ? "bg-blue-600 scale-125" : "bg-gray-300"
-									}`}
-								/>
-							))}
-						</div>
-					</>
-				)}
-			</section>
+			{visibleSkips.length === 0 && (
+				<EmptyState onClearFilters={handleClearFilters} />
+			)}
 		</main>
 	);
 }
